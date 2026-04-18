@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Sentimen</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="container">
+
+    <h1>📊 Analisis Sentimen Komentar</h1>
+
+    <!-- INPUT -->
+    <form method="POST">
+        <textarea name="komentar" rows="5"
+        placeholder="Masukkan komentar (1 baris = 1 komentar)"></textarea>
+        <br><br>
+        <button type="submit">Analisis</button>
+    </form>
+
+    {% if hasil_prediksi %}
+    <div class="result-box">
+
+        <h2>Hasil Analisis</h2>
+        <p>👍 Pro: {{ pro }}</p>
+        <p>👎 Kontra: {{ kontra }}</p>
+        <p>😐 Netral: {{ netral }}</p>
+
+        <!-- CHART -->
+        <canvas id="chart"></canvas>
+
+        <script>
+            var ctx = document.getElementById('chart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Pro', 'Kontra', 'Netral'],
+                    datasets: [{
+                        data: [{{ pro }}, {{ kontra }}, {{ netral }}],
+                        backgroundColor: [
+                            '#4CAF50',
+                            '#F44336',
+                            '#FFC107'
+                        ]
+                    }]
+                }
+            });
+        </script>
+
+        <!-- WORDCLOUD -->
+        <h2>☁️ WordCloud</h2>
+        <img src="{{ url_for('static', filename='wordcloud.png') }}" width="100%">
+
+        <!-- TABEL -->
+        <h3>Detail Komentar</h3>
+        <table>
+            <tr>
+                <th>Komentar</th>
+                <th>Sentimen</th>
+            </tr>
+
+            {% for k, h in hasil_prediksi %}
+            <tr>
+                <td>{{ k }}</td>
+                <td>{{ h }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+    {% endif %}
+
+</div>
+</body>
+</html>
