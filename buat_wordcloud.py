@@ -1,5 +1,5 @@
 import pandas as pd
-
+from buat_wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
 # =========================
