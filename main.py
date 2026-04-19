@@ -42,8 +42,12 @@ def home():
     hasil_prediksi = []
     pro = kontra = netral = 0
 
+    # Pastikan folder static selalu ada (FIX PENTING)
+    if not os.path.exists("static"):
+        os.makedirs("static")
+
     if request.method == "POST":
-        komentar_input = request.form["komentar"]
+        komentar_input = request.form.get("komentar", "")
         daftar = komentar_input.split("\n")
 
         for k in daftar:
@@ -65,12 +69,10 @@ def home():
         # =========================
         text = " ".join(daftar)
 
-        if not os.path.exists("static"):
-            os.makedirs("static")
-
-        wc = WordCloud(width=800, height=400, background_color="white")
-        wc.generate(text)
-        wc.to_file("static/wordcloud.png")
+        if text.strip() != "":  # FIX BIAR GAK ERROR
+            wc = WordCloud(width=800, height=400, background_color="white")
+            wc.generate(text)
+            wc.to_file("static/wordcloud.png")
 
     return render_template(
         "index.html",
@@ -81,8 +83,8 @@ def home():
     )
 
 # =========================
-# RUN (WAJIB UNTUK RAILWAY)
+# RUN (RENDER FIX)
 # =========================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 10000))  # FIX PORT
     app.run(host="0.0.0.0", port=port)
